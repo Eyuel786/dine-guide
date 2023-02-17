@@ -24,7 +24,7 @@ const MyListItemButton = styled(ListItemButton)(({ theme }) => ({
     }
 }));
 
-const MyListItemIcon = styled(ListItemIcon)(({ theme }) => ({
+const MyListItemIcon = styled(ListItemIcon)(() => ({
     color: "inherit"
 }));
 
@@ -34,23 +34,16 @@ const MyListItemText = styled(ListItemText)(({ theme }) => ({
 }));
 
 const SignInBtn = styled(ListItemButton)(({ theme }) => ({
+    color: "#fff",
     backgroundColor: theme.palette.common.yellow,
-    color: theme.palette.grey[600],
     "&:hover": {
         backgroundColor: theme.palette.common.yellow
-    },
-    "&.Mui-selected": {
-        color: '#fff',
-        backgroundColor: theme.palette.common.yellow,
-        "&:hover": {
-            backgroundColor: theme.palette.common.yellow
-        }
     }
 }));
 
 function AppDrawer(props) {
     const location = useLocation();
-    const { openDrawer, closeDrawer, showDrawer, tabs } = props;
+    const { openDrawer, closeDrawer, showDrawer, tabs, showAuthModal } = props;
     const iOS =
         typeof navigator !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
@@ -110,10 +103,10 @@ function AppDrawer(props) {
                 <SignInBtn
                     dense
                     disableRipple
-                    component={Link}
-                    to='/signin'
-                    onClick={closeDrawer}
-                    selected={location.pathname === '/signin'}>
+                    onClick={() => {
+                        closeDrawer();
+                        showAuthModal();
+                    }}>
                     <MyListItemIcon>
                         <LoginIcon />
                     </MyListItemIcon>

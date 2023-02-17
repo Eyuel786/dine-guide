@@ -20,7 +20,7 @@ export const theme = createTheme({
             textTransform: 'none'
         },
         h4: {
-            fontFamily: 'Raleway',
+            fontFamily: 'Open Sans',
             fontWeight: 700
         },
         tab: {

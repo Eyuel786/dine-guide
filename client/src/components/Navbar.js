@@ -7,6 +7,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 
 import AppDrawer from "./AppDrawer";
+import AuthModal from "./AuthModal";
 
 
 const MyAppBar = styled(AppBar)(({ theme }) => ({
@@ -23,8 +24,8 @@ const MyTab = styled(Tab)(({ theme }) => ({
     ...theme.typography.tab
 }));
 
-const SignInBtn = styled(Button)(({ theme, mycolor }) => ({
-    color: mycolor || theme.palette.grey[600],
+const SignInBtn = styled(Button)(({ theme }) => ({
+    color: "#fff",
     fontSize: '1rem',
     fontFamily: 'Open Sans',
     fontWeight: 700,
@@ -52,10 +53,15 @@ function Navbar() {
 
     const [tabIndex, setTabIndex] = useState(false);
     const [openDrawer, setOpenDrawer] = useState(false);
+    const [openAuthModal, setOpenAuthModal] = useState(false);
 
     const handleTabChange = (e, newVal) => setTabIndex(newVal);
+
     const showDrawer = () => setOpenDrawer(true);
     const closeDrawer = () => setOpenDrawer(false);
+
+    const showAuthModal = () => setOpenAuthModal(true);
+    const closeAuthModal = () => setOpenAuthModal(false);
 
     useEffect(() => {
         const index = tabs.findIndex(t => t.route === location.pathname);
@@ -99,20 +105,19 @@ function Navbar() {
                     {!matchesMd &&
                         <SignInBtn
                             disableRipple
-                            component={Link}
-                            to='/signin'
-                            mycolor={
-                                location.pathname === '/signin' ?
-                                    "#fff" :
-                                    undefined}>
+                            onClick={showAuthModal}>
                             Sign in
                         </SignInBtn>}
+                    <AuthModal
+                        openModal={openAuthModal}
+                        closeModal={closeAuthModal} />
                     {matchesMd &&
                         <>
                             <AppDrawer
                                 openDrawer={openDrawer}
                                 showDrawer={showDrawer}
                                 closeDrawer={closeDrawer}
+                                showAuthModal={showAuthModal}
                                 tabs={tabs} />
                             <IconButton
                                 disableRipple

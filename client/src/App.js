@@ -13,7 +13,6 @@ function App() {
         <Route path='/restaurants/new' element={<>Add Restaurant</>} />
         <Route path='/contact' element={<>Contact us</>} />
         <Route path='/about' element={<>About us</>} />
-        <Route path='/signin' element={<>Sign in</>} />
         <Route path='*' element={<>Page not found</>} />
       </Routes>
     </>
