@@ -1,9 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
-    Button, IconButton, Modal, Paper,
+    Box,
+    Button, CircularProgress, IconButton, InputAdornment, Modal, Paper,
     styled, TextField, Typography, useTheme
 } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
 import CloseIcon from "@mui/icons-material/Close";
+import PersonIcon from "@mui/icons-material/Person";
+import LockIcon from "@mui/icons-material/Lock";
+import EmailIcon from "@mui/icons-material/Email";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 import {
     validateUsername,
@@ -11,10 +18,21 @@ import {
     validatePassword
 } from "../utils/validateUser";
 import { useInputState } from "../hooks/useInputState";
+import {
+    sendRegisterRequest,
+    sendLoginRequest
+} from "../store";
+import ImageUpload from "./ImageUpload";
+import { useImgState } from "../hooks/useImgState";
 
 
-const MyPaper = styled(Paper)(() => ({
+const MyModal = styled(Modal)(({ theme }) => ({
+    zIndex: theme.zIndex.modal + 10,
+}));
+
+const MyPaper = styled(Paper)(({ height, theme }) => ({
     width: "22rem",
+    height,
     padding: "1rem 2rem 2rem",
     position: "absolute",
     top: "50%",
@@ -22,6 +40,12 @@ const MyPaper = styled(Paper)(() => ({
     transform: "translate(-50%, -50%)",
     display: "flex",
     flexDirection: "column",
+    overflow: "scroll",
+    [theme.breakpoints.down("sm")]: {
+        width: "75%",
+        height: "70%",
+        padding: "1rem 2rem"
+    }
 }));
 
 const CloseBtn = styled(IconButton)(() => ({
@@ -32,7 +56,7 @@ const CloseBtn = styled(IconButton)(() => ({
 const MyTitle = styled(Typography)(({ theme }) => ({
     ...theme.typography.h4,
     fontSize: "1.6rem",
-    margin: "1rem 0"
+    margin: "2rem 0"
 }));
 
 const MyLabel = styled(Typography)(() => ({
@@ -54,9 +78,12 @@ const ChangeAuthBtn = styled(Button)(() => ({
 
 function AuthModal(props) {
     const theme = useTheme();
+    const dispatch = useDispatch();
+    const { user, loading, error } = useSelector(state => state.auth);
     const { openModal, closeModal } = props;
 
     const [isLoggingIn, setIsLoggingIn] = useState(true);
+    const [showPassword, setShowPassword] = useState(false);
 
     const {
         enteredValue: username,
@@ -88,10 +115,23 @@ function AuthModal(props) {
         reset: resetPassword
     } = useInputState("", validatePassword);
 
+    const [imgState, handleImgFileChange, resetImg] = useImgState();
+
+    const { imgFile, imgPreviewUrl, imgIsValid } = imgState;
+
     let formIsValid = usernameIsValid && passwordIsValid;
 
     if (!isLoggingIn) {
-        formIsValid = formIsValid && emailIsValid;
+        formIsValid = formIsValid && emailIsValid && imgIsValid;
+    }
+
+    const closeAuthModal = () => {
+        resetUsername();
+        resetEmail();
+        resetPassword();
+        resetImg();
+        setIsLoggingIn(true);
+        closeModal();
     }
 
     const onSubmit = e => {
@@ -105,41 +145,52 @@ function AuthModal(props) {
             console.log("Form is not valid");
         }
 
-        console.log(username, email, password);
+        let userData = {
+            username: username.trim(),
+            password: password.trim()
+        }
 
-        resetUsername();
-        resetEmail();
-        resetPassword();
+        if (!isLoggingIn) {
+            userData.email = email.trim();
+            userData.image = imgFile;
+            dispatch(sendRegisterRequest(userData))
+        } else {
+            dispatch(sendLoginRequest(userData))
+        }
     }
 
-    const closeAuthModal = () => {
-        closeModal();
-        resetUsername();
-        resetEmail();
-        resetPassword();
-    }
+    useEffect(() => {
+        if (openModal && !!user?.token) {
+            closeAuthModal();
+        }
+    }, [user, openModal]);
 
     return (
-        <Modal
+        <MyModal
             open={openModal}
             onClose={closeAuthModal}>
             <form
                 onSubmit={onSubmit}>
-                <MyPaper>
+                <MyPaper
+                    height={isLoggingIn ? "25rem" : "27rem"}>
                     <CloseBtn
                         disableRipple
                         onClick={closeAuthModal}>
                         <CloseIcon />
                     </CloseBtn>
                     {isLoggingIn &&
-                        <MyTitle>
+                        <MyTitle
+                            align="center">
                             Welcome back
                         </MyTitle>}
                     {!isLoggingIn &&
-                        <MyTitle>
+                        <MyTitle
+                            align="center">
                             Join {" "}
                             <span
-                                style={{ color: theme.palette.common.yellow }}>
+                                style={{
+                                    color: theme.palette.common.yellow
+                                }}>
                                 Dine
                             </span>
                             Guide
@@ -157,6 +208,12 @@ function AuthModal(props) {
                         onBlur={handleUsernameBlur}
                         error={usernameHasError}
                         helperText={usernameHasError && usernameErrorMessage}
+                        InputProps={{
+                            startAdornment:
+                                <InputAdornment position="start">
+                                    <PersonIcon />
+                                </InputAdornment>
+                        }}
                         fullWidth />
                     {!isLoggingIn &&
                         <MyLabel
@@ -173,6 +230,12 @@ function AuthModal(props) {
                             onBlur={handleEmailBlur}
                             error={emailHasError}
                             helperText={emailHasError && emailErrorMessage}
+                            InputProps={{
+                                startAdornment:
+                                    <InputAdornment position="start">
+                                        <EmailIcon />
+                                    </InputAdornment>
+                            }}
                             fullWidth />}
                     <MyLabel
                         component="label"
@@ -182,20 +245,60 @@ function AuthModal(props) {
                     <TextField
                         id="password"
                         size="small"
+                        type={showPassword ? "text" : "password"}
                         value={password}
                         onChange={handlePasswordChange}
                         onBlur={handlePasswordBlur}
                         error={passwordHasError}
+                        autoComplete="new-password"
                         helperText={passwordHasError && passwordErrorMessage}
+                        InputProps={{
+                            startAdornment:
+                                <InputAdornment position="start">
+                                    <LockIcon />
+                                </InputAdornment>,
+                            endAdornment:
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        disableRipple
+                                        onClick={() => setShowPassword(!showPassword)}>
+                                        {showPassword ?
+                                            <VisibilityIcon /> :
+                                            <VisibilityOffIcon />}
+                                    </IconButton>
+                                </InputAdornment>
+                        }}
                         fullWidth />
-                    <SubmitBtn
-                        variant="contained"
-                        type="submit"
-                        disableRipple
-                        disabled={!formIsValid}>
-                        {isLoggingIn ? "Login" : "Register"}
-                    </SubmitBtn>
-                    <ChangeAuthText>
+                    {!isLoggingIn &&
+                        <ImageUpload
+                            imgPreviewUrl={imgPreviewUrl}
+                            handleImgFileChange={handleImgFileChange} />}
+                    {!loading && error &&
+                        <Typography
+                            color="error"
+                            variant="subtitle2"
+                            sx={{ mt: 1, mb: 0 }}>
+                            {error}
+                        </Typography>}
+                    {!loading &&
+                        <SubmitBtn
+                            variant="contained"
+                            type="submit"
+                            disableRipple
+                            disabled={!formIsValid}>
+                            {isLoggingIn ? "Login" : "Register"}
+                        </SubmitBtn>}
+                    {loading &&
+                        <Box
+                            sx={{
+                                marginTop: "2rem",
+                                display: "flex",
+                                justifyContent: "center"
+                            }}>
+                            <CircularProgress />
+                        </Box>}
+                    <ChangeAuthText
+                        align="center">
                         {isLoggingIn ?
                             "Don't have an account?" :
                             "Already have an account?"}
@@ -207,7 +310,7 @@ function AuthModal(props) {
                     </ChangeAuthText>
                 </MyPaper>
             </form>
-        </Modal>
+        </MyModal>
     );
 }
 

@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require("joi");
 
 
 const emailPattern = new RegExp("^[a-zA-Z0-9]+@[a-z]+\\.[a-z]{2,3}$");

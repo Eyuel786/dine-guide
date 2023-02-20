@@ -1,14 +1,19 @@
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import {
     List, ListItemButton, SwipeableDrawer,
     Toolbar, styled, ListItemText, ListItemIcon
 } from "@mui/material";
-import { Link, useLocation } from "react-router-dom"
 import HomeIcon from "@mui/icons-material/Home";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import CreateIcon from "@mui/icons-material/Create";
 import InfoIcon from "@mui/icons-material/Info";
 import PhoneIcon from "@mui/icons-material/Phone";
 import LoginIcon from "@mui/icons-material/Login";
+import LogoutIcon from "@mui/icons-material/Logout";
+
+import { makeLogoutRequest } from "../store";
 
 
 const MyDrawer = styled(SwipeableDrawer)(({ theme }) => ({
@@ -33,7 +38,7 @@ const MyListItemText = styled(ListItemText)(({ theme }) => ({
     color: "inherit"
 }));
 
-const SignInBtn = styled(ListItemButton)(({ theme }) => ({
+const MyAuthBtn = styled(ListItemButton)(({ theme }) => ({
     color: "#fff",
     backgroundColor: theme.palette.common.yellow,
     "&:hover": {
@@ -43,9 +48,16 @@ const SignInBtn = styled(ListItemButton)(({ theme }) => ({
 
 function AppDrawer(props) {
     const location = useLocation();
-    const { openDrawer, closeDrawer, showDrawer, tabs, showAuthModal } = props;
+    const dispatch = useDispatch();
+    const {
+        openDrawer, closeDrawer, showDrawer,
+        tabs, showAuthModal, user
+    } = props;
+
     const iOS =
         typeof navigator !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+    const [openedRoute, setopenedRoute] = useState(false);
 
     const MyIcon = ({ name }) => {
         let icon;
@@ -73,13 +85,17 @@ function AppDrawer(props) {
         return icon;
     }
 
+    useEffect(() => {
+        setopenedRoute(location.pathname);
+    }, [location]);
+
     return (
         <MyDrawer
             disableBackdropTransition={!iOS}
             disableDiscovery={iOS}
             open={openDrawer}
             onOpen={showDrawer}
-            onClose={closeDrawer} >
+            onClose={closeDrawer}>
             <Toolbar />
             <List
                 disablePadding>
@@ -92,7 +108,7 @@ function AppDrawer(props) {
                     component={Link}
                     to={t.route}
                     onClick={closeDrawer}
-                    selected={t.route === location.pathname}>
+                    selected={t.route === openedRoute}>
                     <MyListItemIcon>
                         <MyIcon name={t.name} />
                     </MyListItemIcon>
@@ -100,20 +116,36 @@ function AppDrawer(props) {
                         primary={t.name}
                         disableTypography />
                 </MyListItemButton>))}
-                <SignInBtn
-                    dense
-                    disableRipple
-                    onClick={() => {
-                        closeDrawer();
-                        showAuthModal();
-                    }}>
-                    <MyListItemIcon>
-                        <LoginIcon />
-                    </MyListItemIcon>
-                    <MyListItemText
-                        primary="Sign in"
-                        disableTypography />
-                </SignInBtn>
+                {!user?.token &&
+                    <MyAuthBtn
+                        dense
+                        disableRipple
+                        onClick={() => {
+                            closeDrawer();
+                            showAuthModal();
+                        }}>
+                        <MyListItemIcon>
+                            <LoginIcon />
+                        </MyListItemIcon>
+                        <MyListItemText
+                            primary="Sign in"
+                            disableTypography />
+                    </MyAuthBtn>}
+                {!!user?.token &&
+                    <MyAuthBtn
+                        dense
+                        disableRipple
+                        onClick={() => {
+                            closeDrawer();
+                            dispatch(makeLogoutRequest());
+                        }}>
+                        <MyListItemIcon>
+                            <LogoutIcon />
+                        </MyListItemIcon>
+                        <MyListItemText
+                            primary="Sign out"
+                            disableTypography />
+                    </MyAuthBtn>}
             </List>
         </MyDrawer>
     );

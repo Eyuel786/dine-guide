@@ -7,7 +7,7 @@ export const theme = createTheme({
             main: '#2f3e46'
         },
         secondary: {
-            main: '#84a98c'
+            main: '#ffbd00'
         },
         common: {
             beige: '#e9d8a6',
