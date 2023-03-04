@@ -14,3 +14,12 @@ module.exports.userSchema = Joi.object({
     username: Joi.string().min(3).max(40).required(),
     password: Joi.string().pattern(passwordPattern).required()
 });
+
+module.exports.restaurantSchema = Joi.object({
+    name: Joi.string().min(3).max(50).required(),
+    type: Joi.string().required(),
+    location: Joi.string().required(),
+    website: Joi.string().required(),
+    description: Joi.string().min(40).max(200).required(),
+    image: Joi.string()
+});
