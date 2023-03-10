@@ -20,6 +20,11 @@ module.exports.restaurantSchema = Joi.object({
     type: Joi.string().required(),
     location: Joi.string().required(),
     website: Joi.string().required(),
-    description: Joi.string().min(40).max(200).required(),
+    description: Joi.string().min(40).max(1000).required(),
     image: Joi.string()
+});
+
+module.exports.reviewSchema = Joi.object({
+    rating: Joi.number().min(1).max(5).required(),
+    comment: Joi.string().min(40).max(500).required()
 });

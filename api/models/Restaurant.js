@@ -30,6 +30,7 @@ const restaurantSchema = new Schema({
         type: String,
         required: true
     },
+    reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
     creator: {
         type: Schema.Types.ObjectId,
         ref: "User"
