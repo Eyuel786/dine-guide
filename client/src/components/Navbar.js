@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
     AppBar, Toolbar, styled, Button, Tabs, Tab,
-    useTheme, useMediaQuery, IconButton, Avatar, Menu, MenuItem
+    useTheme, useMediaQuery, IconButton, Avatar, Menu, MenuItem, useScrollTrigger, Slide
 } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import { useDispatch, useSelector } from "react-redux";
@@ -15,7 +15,8 @@ import { makeLogoutRequest } from "../store";
 
 
 const MyAppBar = styled(AppBar)(({ theme }) => ({
-    zIndex: theme.zIndex.modal + 1
+    zIndex: theme.zIndex.modal + 1,
+    padding: "0 7rem"
 }));
 
 const Title = styled(Button)(({ theme }) => ({
@@ -54,6 +55,19 @@ const MyMenuItem = styled(MenuItem)(({ theme }) => ({
         backgroundColor: theme.palette.primary.light
     }
 }));
+
+function HideAppBar({ children }) {
+    const trigger = useScrollTrigger();
+
+    return (
+        <Slide
+            appear={false}
+            direction="down"
+            in={!trigger}>
+            {children}
+        </Slide>
+    );
+}
 
 function Navbar() {
     const theme = useTheme();
@@ -114,97 +128,100 @@ function Navbar() {
 
     return (
         <>
-            <MyAppBar>
-                <Toolbar
-                    variant={matchesMd ? "dense" : "regular"}>
-                    <Title
-                        component={Link}
-                        to='/home'
-                        disableRipple>
-                        <span
-                            style={{ color: theme.palette.common.yellow }}>
-                            Dine
-                        </span>
-                        Guide
-                    </Title>
-                    {!matchesMd &&
-                        <Tabs
-                            sx={{ ml: 'auto' }}
-                            textColor="inherit"
-                            indicatorColor="primary"
-                            value={tabIndex}
-                            onChange={handleTabChange}>
-                            {tabs.map(t =>
-                            (<MyTab
-                                key={t.name}
-                                label={t.name}
-                                component={Link}
-                                to={t.route}
-                                disableRipple />))}
-                        </Tabs>}
-                    {!matchesMd && !user?.token &&
-                        <SignInBtn
-                            disableRipple
-                            onClick={showAuthModal}>
-                            Sign in
-                        </SignInBtn>}
-                    {!matchesMd && !!user?.token &&
-                        <>
-                            <Button
-                                disableRipple
-                                onClick={showMenu}
-                                aria-owns={anchorEl ? "simple-menu" : undefined}
-                                aria-haspopup={anchorEl ? true : undefined}>
-                                <Avatar
-                                    src={`http://127.0.0.1:9000/api/${user?.image.replace(/\\/g, "/")}`}>
-                                    {user?.username.slice(0, 1)}
-                                </Avatar>
-                            </Button>
-                            <MyMenu
-                                id="simple-menu"
-                                open={openMenu}
-                                anchorEl={anchorEl}
-                                onClose={closeMenu}
-                                MenuListProps={{ onMouseLeave: closeMenu }}>
-                                <MyMenuItem>
-                                    <PersonIcon
-                                        sx={{ mr: 2 }} />
-                                    Profile
-                                </MyMenuItem>
-                                <MyMenuItem
-                                    onClick={() => {
-                                        closeMenu();
-                                        dispatch(makeLogoutRequest());
-                                    }}>
-                                    <LogoutIcon
-                                        sx={{ mr: 2 }} />
-                                    Logout
-                                </MyMenuItem>
-                            </MyMenu>
-                        </>}
-                    <AuthModal
-                        openModal={openAuthModal}
-                        closeModal={closeAuthModal} />
-                    {matchesMd &&
-                        <>
-                            <AppDrawer
-                                openDrawer={openDrawer}
-                                showDrawer={showDrawer}
-                                closeDrawer={closeDrawer}
-                                showAuthModal={showAuthModal}
-                                user={user}
-                                tabs={tabs} />
-                            <IconButton
-                                disableRipple
+            <HideAppBar>
+                <MyAppBar>
+                    <Toolbar
+                        variant={matchesMd ? "dense" : "regular"}
+                        disableGutters>
+                        <Title
+                            component={Link}
+                            to='/home'
+                            disableRipple>
+                            <span
+                                style={{ color: theme.palette.common.yellow }}>
+                                Dine
+                            </span>
+                            Guide
+                        </Title>
+                        {!matchesMd &&
+                            <Tabs
                                 sx={{ ml: 'auto' }}
-                                onClick={() => setOpenDrawer(!openDrawer)}>
-                                <MenuIcon
-                                    fontSize="large"
-                                    sx={{ color: '#fff' }} />
-                            </IconButton>
-                        </>}
-                </Toolbar>
-            </MyAppBar>
+                                textColor="inherit"
+                                indicatorColor="primary"
+                                value={tabIndex}
+                                onChange={handleTabChange}>
+                                {tabs.map(t =>
+                                (<MyTab
+                                    key={t.name}
+                                    label={t.name}
+                                    component={Link}
+                                    to={t.route}
+                                    disableRipple />))}
+                            </Tabs>}
+                        {!matchesMd && !user?.token &&
+                            <SignInBtn
+                                disableRipple
+                                onClick={showAuthModal}>
+                                Sign in
+                            </SignInBtn>}
+                        {!matchesMd && !!user?.token &&
+                            <>
+                                <Button
+                                    disableRipple
+                                    onClick={showMenu}
+                                    aria-owns={anchorEl ? "simple-menu" : undefined}
+                                    aria-haspopup={anchorEl ? true : undefined}>
+                                    <Avatar
+                                        src={`http://127.0.0.1:9000/api/${user?.image.replace(/\\/g, "/")}`}>
+                                        {user?.username.slice(0, 1)}
+                                    </Avatar>
+                                </Button>
+                                <MyMenu
+                                    id="simple-menu"
+                                    open={openMenu}
+                                    anchorEl={anchorEl}
+                                    onClose={closeMenu}
+                                    MenuListProps={{ onMouseLeave: closeMenu }}>
+                                    <MyMenuItem>
+                                        <PersonIcon
+                                            sx={{ mr: 2 }} />
+                                        Profile
+                                    </MyMenuItem>
+                                    <MyMenuItem
+                                        onClick={() => {
+                                            closeMenu();
+                                            dispatch(makeLogoutRequest());
+                                        }}>
+                                        <LogoutIcon
+                                            sx={{ mr: 2 }} />
+                                        Logout
+                                    </MyMenuItem>
+                                </MyMenu>
+                            </>}
+                        <AuthModal
+                            openModal={openAuthModal}
+                            closeModal={closeAuthModal} />
+                        {matchesMd &&
+                            <>
+                                <AppDrawer
+                                    openDrawer={openDrawer}
+                                    showDrawer={showDrawer}
+                                    closeDrawer={closeDrawer}
+                                    showAuthModal={showAuthModal}
+                                    user={user}
+                                    tabs={tabs} />
+                                <IconButton
+                                    disableRipple
+                                    sx={{ ml: 'auto' }}
+                                    onClick={() => setOpenDrawer(!openDrawer)}>
+                                    <MenuIcon
+                                        fontSize="large"
+                                        sx={{ color: '#fff' }} />
+                                </IconButton>
+                            </>}
+                    </Toolbar>
+                </MyAppBar>
+            </HideAppBar>
             <Toolbar
                 variant={matchesMd ? "dense" : "regular"} />
         </>

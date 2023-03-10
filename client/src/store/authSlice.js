@@ -24,10 +24,12 @@ export const authSlice = createSlice({
         },
         login: (state, action) => {
             state.loading = false;
+            state.error = null;
             state.user = { ...action.payload.user }
         },
         logout: state => {
             state.loading = false;
+            state.error = null;
             state.user = { ...initUser };
         },
         error: (state, action) => {
@@ -67,9 +69,11 @@ export const sendRegisterRequest = personData => {
             const responseData = await response.json();
             dispatch(authActions.login({ user: responseData }));
             localStorage.setItem("dine-guide-app-user", JSON.stringify(responseData));
+            return responseData;
 
         } catch (err) {
             dispatch(authActions.error({ error: err.message }));
+            throw err;
         }
     }
 }
@@ -99,9 +103,11 @@ export const sendLoginRequest = userData => {
             const responseData = await response.json();
             dispatch(authActions.login({ user: responseData }));
             localStorage.setItem("dine-guide-app-user", JSON.stringify(responseData));
+            return responseData;
 
         } catch (err) {
             dispatch(authActions.error({ error: err.message }));
+            throw err;
         }
     }
 }

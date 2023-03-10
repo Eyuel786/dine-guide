@@ -8,9 +8,21 @@ import {
     makeLogoutRequest
 } from "./authSlice";
 
+import {
+    restaurantsSlice,
+    restaurantsActions,
+    fetchRestaurants,
+    sendNewRestaurant,
+    sendUpdatedRestaurant,
+    removeRestaurantFromDB,
+    sendReview,
+    removeReviewFromDB
+} from "./restaurantsSlice";
+
 export const store = configureStore({
     reducer: {
-        auth: authSlice.reducer
+        auth: authSlice.reducer,
+        restaurants: restaurantsSlice.reducer
     }
 });
 
@@ -19,4 +31,14 @@ export {
     sendRegisterRequest,
     sendLoginRequest,
     makeLogoutRequest
+}
+
+export {
+    restaurantsActions,
+    fetchRestaurants,
+    sendNewRestaurant,
+    sendUpdatedRestaurant,
+    removeRestaurantFromDB,
+    sendReview,
+    removeReviewFromDB
 }

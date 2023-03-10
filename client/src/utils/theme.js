@@ -10,12 +10,22 @@ export const theme = createTheme({
             main: '#ffbd00'
         },
         common: {
-            beige: '#e9d8a6',
             red: '#ef233c',
             yellow: '#ffbd00'
         }
     },
+    components: {
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    fontFamily: 'Open Sans',
+                    fontWeight: 700
+                }
+            }
+        }
+    },
     typography: {
+        fontFamily: ['Poppins', 'sans-serif'].join(','),
         allVariants: {
             textTransform: 'none'
         },

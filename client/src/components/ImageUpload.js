@@ -15,8 +15,6 @@ const ImgContainer = styled(Box)(({ theme }) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: "1rem",
-    marginBottom: "0.6rem",
     marginRight: "1rem"
 }));
 
@@ -43,7 +41,7 @@ function ImageUpload(props) {
                         color="text.secondary"
                         align="center"
                         sx={{ margin: "0.5rem" }}>
-                        Please upload profile picture
+                        Please upload an image
                     </Typography>}
                 {imgPreviewUrl &&
                     <MyImage

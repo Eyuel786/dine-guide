@@ -27,11 +27,11 @@ export function imgReducer(state, action) {
     }
 }
 
-export function useImgState() {
+export function useImgState(initImgUrl = null) {
 
     const [state, dispatch] = useReducer(
         imgReducer,
-        { imgFile: null, imgPreviewUrl: null, imgIsValid: false });
+        { imgFile: null, imgPreviewUrl: initImgUrl, imgIsValid: !!initImgUrl });
 
     const onChange = e => dispatch({ type: "CHANGE", event: e });
     const reset = () => dispatch({ type: "RESET" });

@@ -1,4 +1,4 @@
-import { Grid, styled, useMediaQuery, useTheme } from "@mui/material";
+import { Grid, styled, Toolbar, useMediaQuery, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, Link } from "react-router-dom";
@@ -6,7 +6,7 @@ import { useLocation, Link } from "react-router-dom";
 
 const MyGridContainer = styled(Grid)(({ theme }) => ({
     backgroundColor: theme.palette.primary.main,
-    position: "fixed",
+    position: "relative",
     bottom: 0,
     padding: "1rem 1.5rem"
 }));

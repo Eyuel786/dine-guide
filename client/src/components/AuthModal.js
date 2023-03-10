@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
     Box,
     Button, CircularProgress, IconButton, InputAdornment, Modal, Paper,
+    Stack,
     styled, TextField, Typography, useTheme
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,11 +25,8 @@ import {
 } from "../store";
 import ImageUpload from "./ImageUpload";
 import { useImgState } from "../hooks/useImgState";
+import MyModal from "./MyModal";
 
-
-const MyModal = styled(Modal)(({ theme }) => ({
-    zIndex: theme.zIndex.modal + 10,
-}));
 
 const MyPaper = styled(Paper)(({ height, theme }) => ({
     width: "22rem",
@@ -46,17 +44,6 @@ const MyPaper = styled(Paper)(({ height, theme }) => ({
         height: "70%",
         padding: "1rem 2rem"
     }
-}));
-
-const CloseBtn = styled(IconButton)(() => ({
-    padding: 0,
-    alignSelf: "flex-end"
-}));
-
-const MyTitle = styled(Typography)(({ theme }) => ({
-    ...theme.typography.h4,
-    fontSize: "1.6rem",
-    margin: "2rem 0"
 }));
 
 const MyLabel = styled(Typography)(() => ({
@@ -77,7 +64,6 @@ const ChangeAuthBtn = styled(Button)(() => ({
 }));
 
 function AuthModal(props) {
-    const theme = useTheme();
     const dispatch = useDispatch();
     const { user, loading, error } = useSelector(state => state.auth);
     const { openModal, closeModal } = props;
@@ -154,121 +140,104 @@ function AuthModal(props) {
             userData.email = email.trim();
             userData.image = imgFile;
             dispatch(sendRegisterRequest(userData))
+                .then(closeAuthModal)
+                .catch(err => console.log("Error:", err.message));
         } else {
             dispatch(sendLoginRequest(userData))
+                .then(closeAuthModal)
+                .catch(err => console.log("Error:", err.message));
         }
     }
-
-    useEffect(() => {
-        if (openModal && !!user?.token) {
-            closeAuthModal();
-        }
-    }, [user, openModal]);
 
     return (
         <MyModal
             open={openModal}
-            onClose={closeAuthModal}>
+            closeModal={closeAuthModal}
+            title={isLoggingIn ? "Welcome back" : "Join DineGuide"}>
             <form
                 onSubmit={onSubmit}>
-                <MyPaper
-                    height={isLoggingIn ? "25rem" : "27rem"}>
-                    <CloseBtn
-                        disableRipple
-                        onClick={closeAuthModal}>
-                        <CloseIcon />
-                    </CloseBtn>
-                    {isLoggingIn &&
-                        <MyTitle
-                            align="center">
-                            Welcome back
-                        </MyTitle>}
-                    {!isLoggingIn &&
-                        <MyTitle
-                            align="center">
-                            Join {" "}
-                            <span
-                                style={{
-                                    color: theme.palette.common.yellow
-                                }}>
-                                Dine
-                            </span>
-                            Guide
-                        </MyTitle>}
-                    <MyLabel
-                        component="label"
-                        htmlFor="username">
-                        Username
-                    </MyLabel>
-                    <TextField
-                        id="username"
-                        size="small"
-                        value={username}
-                        onChange={handleUsernameChange}
-                        onBlur={handleUsernameBlur}
-                        error={usernameHasError}
-                        helperText={usernameHasError && usernameErrorMessage}
-                        InputProps={{
-                            startAdornment:
-                                <InputAdornment position="start">
-                                    <PersonIcon />
-                                </InputAdornment>
-                        }}
-                        fullWidth />
-                    {!isLoggingIn &&
+                <Stack
+                    spacing={2}
+                    sx={{ p: "0.5rem 2rem" }}>
+                    <Box>
                         <MyLabel
                             component="label"
-                            htmlFor="email">
-                            Email
-                        </MyLabel>}
-                    {!isLoggingIn &&
+                            htmlFor="username">
+                            Username
+                        </MyLabel>
                         <TextField
-                            id="email"
+                            id="username"
                             size="small"
-                            value={email}
-                            onChange={handleEmailChange}
-                            onBlur={handleEmailBlur}
-                            error={emailHasError}
-                            helperText={emailHasError && emailErrorMessage}
+                            value={username}
+                            onChange={handleUsernameChange}
+                            onBlur={handleUsernameBlur}
+                            error={usernameHasError}
+                            helperText={usernameHasError && usernameErrorMessage}
                             InputProps={{
                                 startAdornment:
                                     <InputAdornment position="start">
-                                        <EmailIcon />
+                                        <PersonIcon />
                                     </InputAdornment>
                             }}
-                            fullWidth />}
-                    <MyLabel
-                        component="label"
-                        htmlFor="password">
-                        Password
-                    </MyLabel>
-                    <TextField
-                        id="password"
-                        size="small"
-                        type={showPassword ? "text" : "password"}
-                        value={password}
-                        onChange={handlePasswordChange}
-                        onBlur={handlePasswordBlur}
-                        error={passwordHasError}
-                        autoComplete="new-password"
-                        helperText={passwordHasError && passwordErrorMessage}
-                        InputProps={{
-                            startAdornment:
-                                <InputAdornment position="start">
-                                    <LockIcon />
-                                </InputAdornment>,
-                            endAdornment:
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        disableRipple
-                                        onClick={() => setShowPassword(!showPassword)}>
-                                        {showPassword ?
-                                            <VisibilityIcon /> :
-                                            <VisibilityOffIcon />}
-                                    </IconButton>
-                                </InputAdornment>
-                        }}
-                        fullWidth />
+                            fullWidth />
+                    </Box>
+                    {!isLoggingIn &&
+                        <Box>
+                            <MyLabel
+                                component="label"
+                                htmlFor="email">
+                                Email
+                            </MyLabel>
+                            <TextField
+                                id="email"
+                                size="small"
+                                value={email}
+                                onChange={handleEmailChange}
+                                onBlur={handleEmailBlur}
+                                error={emailHasError}
+                                helperText={emailHasError && emailErrorMessage}
+                                InputProps={{
+                                    startAdornment:
+                                        <InputAdornment position="start">
+                                            <EmailIcon />
+                                        </InputAdornment>
+                                }}
+                                fullWidth />
+                        </Box>}
+                    <Box>
+                        <MyLabel
+                            component="label"
+                            htmlFor="password">
+                            Password
+                        </MyLabel>
+                        <TextField
+                            id="password"
+                            size="small"
+                            type={showPassword ? "text" : "password"}
+                            value={password}
+                            onChange={handlePasswordChange}
+                            onBlur={handlePasswordBlur}
+                            error={passwordHasError}
+                            autoComplete="new-password"
+                            helperText={passwordHasError && passwordErrorMessage}
+                            InputProps={{
+                                startAdornment:
+                                    <InputAdornment position="start">
+                                        <LockIcon />
+                                    </InputAdornment>,
+                                endAdornment:
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            disableRipple
+                                            onClick={() => setShowPassword(!showPassword)}>
+                                            {showPassword ?
+                                                <VisibilityIcon /> :
+                                                <VisibilityOffIcon />}
+                                        </IconButton>
+                                    </InputAdornment>
+                            }}
+                            fullWidth />
+                    </Box>
                     {!isLoggingIn &&
                         <ImageUpload
                             imgPreviewUrl={imgPreviewUrl}
@@ -297,20 +266,20 @@ function AuthModal(props) {
                             }}>
                             <CircularProgress />
                         </Box>}
-                    <ChangeAuthText
-                        align="center">
-                        {isLoggingIn ?
-                            "Don't have an account?" :
-                            "Already have an account?"}
-                        <ChangeAuthBtn
-                            disableRipple
-                            onClick={() => setIsLoggingIn(!isLoggingIn)}>
-                            {isLoggingIn ? "Sign up" : "Sign in"}
-                        </ChangeAuthBtn>
-                    </ChangeAuthText>
-                </MyPaper>
+                </Stack>
+                <ChangeAuthText
+                    align="center">
+                    {isLoggingIn ?
+                        "Don't have an account?" :
+                        "Already have an account?"}
+                    <ChangeAuthBtn
+                        disableRipple
+                        onClick={() => setIsLoggingIn(!isLoggingIn)}>
+                        {isLoggingIn ? "Sign up" : "Sign in"}
+                    </ChangeAuthBtn>
+                </ChangeAuthText>
             </form>
-        </MyModal>
+        </MyModal >
     );
 }
 
