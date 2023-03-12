@@ -1,4 +1,4 @@
-import { Grid, styled, Toolbar, useMediaQuery, useTheme } from "@mui/material";
+import { Grid, styled, useMediaQuery, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, Link } from "react-router-dom";
@@ -32,12 +32,18 @@ function Footer() {
     const user = useSelector(state => state.auth.user);
 
     const [openedRoute, setOpenedRoute] = useState(false);
+    const [showFooter, setShowFooter] = useState(true);
 
     useEffect(() => {
         setOpenedRoute(location.pathname);
+        if (location.pathname === "/home" || matchesMd) {
+            setShowFooter(false)
+        } else {
+            setShowFooter(true);
+        }
     }, [location]);
 
-    if (matchesMd)
+    if (!showFooter)
         return <></>;
 
     return (

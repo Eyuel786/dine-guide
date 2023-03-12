@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const MainContainer = styled(Box)(({ theme }) => ({
     minHeight: "90vh",
-    padding: "2rem",
+    padding: "2rem 6rem",
     backgroundColor: theme.palette.grey[100],
     display: "flex",
     justifyContent: "center"

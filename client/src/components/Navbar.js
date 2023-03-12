@@ -99,6 +99,8 @@ function Navbar() {
     const [openMenu, setOpenMenu] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
 
+    const [showDiffAppBar, setShowDifAppBar] = useState(false);
+
     const handleTabChange = (e, newVal) => setTabIndex(newVal);
 
     const showDrawer = () => setOpenDrawer(true);
@@ -126,10 +128,20 @@ function Navbar() {
         }
     }, [location, tabs]);
 
+    useEffect(() => {
+        if (location.pathname === "/home") {
+            setShowDifAppBar(true);
+        } else {
+            setShowDifAppBar(false);
+        }
+    }, [location]);
+
     return (
         <>
             <HideAppBar>
-                <MyAppBar>
+                <MyAppBar
+                    sx={showDiffAppBar &&
+                        { background: "transparent", boxShadow: "none" }}>
                     <Toolbar
                         variant={matchesMd ? "dense" : "regular"}
                         disableGutters>
@@ -147,7 +159,7 @@ function Navbar() {
                             <Tabs
                                 sx={{ ml: 'auto' }}
                                 textColor="inherit"
-                                indicatorColor="primary"
+                                indicatorColor="transparent"
                                 value={tabIndex}
                                 onChange={handleTabChange}>
                                 {tabs.map(t =>
@@ -222,8 +234,8 @@ function Navbar() {
                     </Toolbar>
                 </MyAppBar>
             </HideAppBar>
-            <Toolbar
-                variant={matchesMd ? "dense" : "regular"} />
+            {!showDiffAppBar && <Toolbar
+                variant={matchesMd ? "dense" : "regular"} />}
         </>
     );
 }

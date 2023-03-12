@@ -13,7 +13,7 @@ module.exports.findAllRestaurants = async (req, res) => {
                 select: "-password"
             }
         })
-        .sort({ updatedAt: -1 });
+        .sort({ createdAt: -1 });
 
     res.json(restaurants.map(r => r.toObject({ getters: true })));
 }

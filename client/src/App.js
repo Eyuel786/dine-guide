@@ -12,6 +12,7 @@ import { fetchRestaurants } from "./store";
 import RestaurantsList from "./pages/RestaurantsList";
 import RestaurantDetail from "./pages/RestaurantDetail";
 import EditRestaurant from "./pages/EditRestaurant";
+import Home from "./pages/Home";
 
 
 function App() {
@@ -29,7 +30,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Navigate to="/home" replace />} />
-        <Route path="/home" element={<>Home</>} />
+        <Route path="/home" element={<Home />} />
         <Route path="/restaurants" element={<RestaurantsList />} />
         <Route path="/restaurants/new" element={
           <ProtectedRoute>

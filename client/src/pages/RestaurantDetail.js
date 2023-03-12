@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Typography, styled, Box, IconButton, Button, Popover } from "@mui/material";
+import { Typography, styled, Box, IconButton, Button, Popover, Grid } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -22,10 +22,6 @@ const MainContainer = styled(Box)(({ theme }) => ({
     display: "flex",
     justifyContent: "flex-start",
     backgroundColor: theme.palette.grey[100]
-}));
-
-const ContentContainer = styled(Box)(() => ({
-    width: "50%",
 }));
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
@@ -90,44 +86,47 @@ function RestaurantDetail() {
                     </IconButton>}
             </Title>
             <MainContainer>
-                <ContentContainer>
-                    <SectionTitle>
-                        Overview
-                    </SectionTitle>
-                    <Typography
-                        color="text.secondary"
-                        variant="body1"
-                        sx={{ whiteSpace: 'pre-line' }}>
-                        {restaurant.description}
-                    </Typography>
-                    <ReviewsList
-                        restaurant={restaurant}
-                        userId={user.userId} />
-                    <Button
-                        startIcon={<AddIcon />}
-                        onClick={showModal}
-                        variant="contained"
-                        disabled={!user?.token}
-                        disableRipple
-                    // onPointerEnter={showPopover}
-                    // aria-owns={anchorEl ? "simple-popover" : undefined}
-                    // aria-haspopup={anchorEl ? true : undefined}
-                    >
-                        Add Review
-                    </Button>
-                    <Popover
-                        id="simple-popover"
-                        open={openPopover}
-                        anchorEl={anchorEl}
-                        onClose={closePopover}
-                        PaperProps={{ onMouseLeave: closePopover }}>
-                        <Typography>Message</Typography>
-                    </Popover>
-                    <AddNewReview
-                        open={openModal}
-                        closeModal={closeModal}
-                        restaurantId={restaurant.id} />
-                </ContentContainer>
+                <Grid container>
+                    <Grid item
+                        md={6}>
+                        <SectionTitle>
+                            Overview
+                        </SectionTitle>
+                        <Typography
+                            color="text.secondary"
+                            variant="body1"
+                            sx={{ whiteSpace: 'pre-line' }}>
+                            {restaurant.description}
+                        </Typography>
+                        <ReviewsList
+                            restaurant={restaurant}
+                            userId={user.userId} />
+                        <Button
+                            startIcon={<AddIcon />}
+                            onClick={showModal}
+                            variant="contained"
+                            disabled={!user?.token}
+                            disableRipple
+                        // onPointerEnter={showPopover}
+                        // aria-owns={anchorEl ? "simple-popover" : undefined}
+                        // aria-haspopup={anchorEl ? true : undefined}
+                        >
+                            Add Review
+                        </Button>
+                        <Popover
+                            id="simple-popover"
+                            open={openPopover}
+                            anchorEl={anchorEl}
+                            onClose={closePopover}
+                            PaperProps={{ onMouseLeave: closePopover }}>
+                            <Typography>Message</Typography>
+                        </Popover>
+                        <AddNewReview
+                            open={openModal}
+                            closeModal={closeModal}
+                            restaurantId={restaurant.id} />
+                    </Grid>
+                </Grid>
             </MainContainer>
         </>
     );
