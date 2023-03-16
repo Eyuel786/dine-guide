@@ -41,7 +41,7 @@ function Footer() {
         } else {
             setShowFooter(true);
         }
-    }, [location]);
+    }, [location, matchesMd]);
 
     if (!showFooter)
         return <></>;

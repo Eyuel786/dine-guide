@@ -23,7 +23,7 @@ export const validateWebsite = value => {
     if (errorMessage) return errorMessage;
 
     const websiteIsValid =
-        /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+        /[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
             .test(value.trim());
     if (!websiteIsValid) return "Website is invalid";
 

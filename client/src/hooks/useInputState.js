@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useReducer } from "react";
 
 
 export function inputReducer(state, action) {
@@ -19,6 +19,8 @@ export function inputReducer(state, action) {
                 enteredValue: "",
                 inputIsBlurred: false
             }
+        default:
+            return state;
     }
 }
 

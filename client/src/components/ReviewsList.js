@@ -1,18 +1,18 @@
+import {
+    Typography, styled, Grid,
+    Avatar, Rating, Button, useTheme
+} from "@mui/material";
 import moment from "moment";
-import { Typography, styled, Grid, Avatar, Rating, Button, useTheme } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { removeReviewFromDB } from "../store";
 
 
 const MyTitle = styled(Typography)(({ theme }) => ({
-    ...theme.typography.h4,
-    fontSize: "1.5rem",
-    padding: "2rem 0 1rem",
-    borderBottom: `2px solid ${theme.palette.grey[300]}`,
-    marginBottom: "1rem"
+    ...theme.typography.sectionTitle,
+    borderBottom: `2px solid ${theme.palette.grey[300]}`
 }));
 
-const MyReviewContainer = styled(Grid)(({ theme }) => ({
+const MyReviewContainer = styled(Grid)(() => ({
     marginBottom: "1rem",
     paddingBottom: "0.5rem"
 }));

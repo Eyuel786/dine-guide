@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Typography, styled, Box, IconButton, Button, Popover, Grid } from "@mui/material";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Typography, styled, Box, IconButton, Button, Grid } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -19,19 +19,33 @@ const Title = styled(Typography)(({ theme }) => ({
 const MainContainer = styled(Box)(({ theme }) => ({
     minHeight: "90vh",
     padding: "2rem 7rem",
-    display: "flex",
-    justifyContent: "flex-start",
     backgroundColor: theme.palette.grey[100]
 }));
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
-    fontSize: "1.5rem",
-    fontWeight: 700,
-    fontFamily: "Open Sans",
-    paddingBottom: "0.5rem",
-    marginBottom: "1rem",
+    ...theme.typography.sectionTitle,
     borderBottom: `2px solid ${theme.palette.grey[300]}`
 }));
+
+const MyInfoBox = styled(Box)(({ theme }) => ({
+    border: `2px solid ${theme.palette.grey[300]}`,
+    padding: "2rem",
+    marginTop: "2rem"
+}));
+
+const MySpanText = styled("span")(({ theme }) => ({
+    marginLeft: "0.5rem",
+    color: theme.palette.text.secondary
+}));
+
+const MyLink = styled(Link)(() => ({
+    textDecoration: "none",
+    marginLeft: "0.5rem",
+    "&:hover": {
+        textDecoration: "underline"
+    }
+}));
+
 
 function RestaurantDetail() {
     const { id } = useParams();
@@ -44,21 +58,8 @@ function RestaurantDetail() {
 
     const [openModal, setOpenModal] = useState(false);
 
-    const [openPopover, setOpenPopover] = useState(false);
-    const [anchorEl, setAnchorEl] = useState(null);
-
     const showModal = () => setOpenModal(true);
     const closeModal = () => setOpenModal(false);
-
-    const showPopover = e => {
-        setAnchorEl(e.currentTarget);
-        setOpenPopover(true);
-    }
-
-    const closePopover = () => {
-        setAnchorEl(null);
-        setOpenPopover(false);
-    }
 
     if (!restaurant)
         return <></>
@@ -86,7 +87,8 @@ function RestaurantDetail() {
                     </IconButton>}
             </Title>
             <MainContainer>
-                <Grid container>
+                <Grid container
+                    spacing={16}>
                     <Grid item
                         md={6}>
                         <SectionTitle>
@@ -98,6 +100,35 @@ function RestaurantDetail() {
                             sx={{ whiteSpace: 'pre-line' }}>
                             {restaurant.description}
                         </Typography>
+                        <MyInfoBox>
+                            <Typography>
+                                Type: <MySpanText>
+                                    {restaurant.type}
+                                </MySpanText>
+                            </Typography>
+                            <Typography>
+                                Website:
+                                <MyLink
+                                    to="#">
+                                    {restaurant.website}
+                                </MyLink>
+                            </Typography>
+                            <Typography>
+                                Location:
+                                <MySpanText>
+                                    {restaurant.location}
+                                </MySpanText>
+                            </Typography>
+                            <Typography>
+                                Uploaded by:
+                                <MySpanText>
+                                    {restaurant.creator.username}
+                                </MySpanText>
+                            </Typography>
+                        </MyInfoBox>
+                    </Grid>
+                    <Grid item
+                        md={6}>
                         <ReviewsList
                             restaurant={restaurant}
                             userId={user.userId} />
@@ -106,21 +137,9 @@ function RestaurantDetail() {
                             onClick={showModal}
                             variant="contained"
                             disabled={!user?.token}
-                            disableRipple
-                        // onPointerEnter={showPopover}
-                        // aria-owns={anchorEl ? "simple-popover" : undefined}
-                        // aria-haspopup={anchorEl ? true : undefined}
-                        >
+                            disableRipple>
                             Add Review
                         </Button>
-                        <Popover
-                            id="simple-popover"
-                            open={openPopover}
-                            anchorEl={anchorEl}
-                            onClose={closePopover}
-                            PaperProps={{ onMouseLeave: closePopover }}>
-                            <Typography>Message</Typography>
-                        </Popover>
                         <AddNewReview
                             open={openModal}
                             closeModal={closeModal}

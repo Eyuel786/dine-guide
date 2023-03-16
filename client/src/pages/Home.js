@@ -1,18 +1,20 @@
 import { useNavigate } from "react-router-dom";
-import { Box, Button, styled, Typography, useTheme } from "@mui/material";
+import { Box, Button, Slide, styled, Typography, useTheme } from "@mui/material";
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 
 
 import homeBackground from "../resources/images/home-background.jpg";
+import { useEffect, useState } from "react";
 
-const MainContainer = styled(Box)(({ theme }) => ({
-    minHeight: "90vh",
+const MainContainer = styled(Box)(() => ({
+    minHeight: "91vh",
     padding: "2rem 6rem",
     backgroundImage: `url(${homeBackground})`,
     backgroundSize: "cover",
     backgroundPosition: "center center",
     backgroundRepeat: "no-repeat",
-    position: "relative"
+    position: "relative",
+    overflow: "hidden"
 }));
 
 const MyOverlay = styled(Box)(() => ({
@@ -58,36 +60,54 @@ const MyButton = styled(Button)(() => ({
     fontSize: "1rem"
 }));
 
+const MySlideTransition = styled(Slide)(({ theme }) => ({
+    transitionDuration: theme.transitions.duration.complex,
+    easing: theme.transitions.easing.easeInOut
+}));
+
 function Home() {
     const theme = useTheme();
     const navigate = useNavigate();
+
+    const [show, setShow] = useState(false);
+
+    useEffect(() => {
+        setShow(true);
+    }, []);
 
     return (
         <MainContainer>
             <MyOverlay />
             <ContentContainer>
-                <WelcomeText>
-                    Welcome to
-                </WelcomeText>
-                <Title
-                >
-                    <span
-                        style={{ color: theme.palette.common.yellow }}>
-                        Dine
-                    </span>
-                    Guide
-                </Title>
-                <DescriptionText>
-                    A website that gives you restaurant recommendations
-                </DescriptionText>
-                <MyButton
-                    size="large"
-                    variant="contained"
-                    onClick={() => navigate("/restaurants")}
-                    endIcon={<ArrowOutwardIcon />}
-                    disableRipple>
-                    View Restaurants
-                </MyButton>
+                <MySlideTransition
+                    in={show}
+                    direction="down"
+                    mountOnEnter
+                    unmountOnExit>
+                    <Box>
+                        <WelcomeText>
+                            Welcome to
+                        </WelcomeText>
+                        <Title>
+                            <span
+                                style={{ color: theme.palette.common.yellow }}>
+                                Dine
+                            </span>
+                            Guide
+                        </Title>
+                        <DescriptionText>
+                            A website that gives you restaurant recommendations
+                        </DescriptionText>
+                        <MyButton
+                            size="large"
+                            variant="contained"
+                            onClick={() => navigate("/restaurants")}
+                            endIcon={<ArrowOutwardIcon />}
+                            disableRipple>
+                            View Restaurants
+                        </MyButton>
+                    </Box>
+                </MySlideTransition>
             </ContentContainer>
         </MainContainer>
     );

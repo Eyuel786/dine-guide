@@ -1,50 +1,27 @@
-import { useEffect, useState } from "react";
-import {
-    Box,
-    Button, CircularProgress, IconButton, InputAdornment, Modal, Paper,
-    Stack,
-    styled, TextField, Typography, useTheme
-} from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import CloseIcon from "@mui/icons-material/Close";
-import PersonIcon from "@mui/icons-material/Person";
-import LockIcon from "@mui/icons-material/Lock";
 import EmailIcon from "@mui/icons-material/Email";
+import LockIcon from "@mui/icons-material/Lock";
+import PersonIcon from "@mui/icons-material/Person";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-
 import {
-    validateUsername,
-    validateEmail,
-    validatePassword
-} from "../utils/validateUser";
+    Box, Button, CircularProgress,
+    IconButton, InputAdornment, Stack, styled, TextField, Typography
+} from "@mui/material";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { useImgState } from "../hooks/useImgState";
 import { useInputState } from "../hooks/useInputState";
 import {
-    sendRegisterRequest,
-    sendLoginRequest
+    sendLoginRequest, sendRegisterRequest
 } from "../store";
+import {
+    validateEmail,
+    validatePassword, validateUsername
+} from "../utils/validateUser";
 import ImageUpload from "./ImageUpload";
-import { useImgState } from "../hooks/useImgState";
 import MyModal from "./MyModal";
 
-
-const MyPaper = styled(Paper)(({ height, theme }) => ({
-    width: "22rem",
-    height,
-    padding: "1rem 2rem 2rem",
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    display: "flex",
-    flexDirection: "column",
-    overflow: "scroll",
-    [theme.breakpoints.down("sm")]: {
-        width: "75%",
-        height: "70%",
-        padding: "1rem 2rem"
-    }
-}));
 
 const MyLabel = styled(Typography)(() => ({
     marginTop: "0.5rem"
@@ -65,7 +42,7 @@ const ChangeAuthBtn = styled(Button)(() => ({
 
 function AuthModal(props) {
     const dispatch = useDispatch();
-    const { user, loading, error } = useSelector(state => state.auth);
+    const { loading, error } = useSelector(state => state.auth);
     const { openModal, closeModal } = props;
 
     const [isLoggingIn, setIsLoggingIn] = useState(true);

@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const { Schema } = require("mongoose");
-const uniqueValidator = require("mongoose-unique-validator");
+const Review = require("./Review");
 const fs = require("fs");
+const uniqueValidator = require("mongoose-unique-validator");
 
 
 const restaurantSchema = new Schema({
@@ -41,6 +42,12 @@ restaurantSchema.post("findOneAndDelete", async restaurant => {
     try {
         if (restaurant.image) {
             fs.unlink(restaurant.image, () => { });
+        }
+
+        if (restaurant.reviews.length) {
+            for (let reviewId of restaurant.reviews) {
+                await Review.findByIdAndDelete(reviewId);
+            }
         }
 
     } catch (err) {

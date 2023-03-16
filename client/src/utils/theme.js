@@ -37,6 +37,13 @@ export const theme = createTheme({
             fontFamily: 'Open Sans',
             fontSize: '1rem',
             fontWeight: 700
+        },
+        sectionTitle: {
+            fontSize: "1.5rem",
+            fontWeight: 700,
+            fontFamily: "Open Sans",
+            paddingBottom: "0.5rem",
+            marginBottom: "1rem",
         }
     }
 });

@@ -13,6 +13,8 @@ import RestaurantsList from "./pages/RestaurantsList";
 import RestaurantDetail from "./pages/RestaurantDetail";
 import EditRestaurant from "./pages/EditRestaurant";
 import Home from "./pages/Home";
+import AboutUs from "./pages/AboutUs";
+import ContactUs from "./pages/ContactUs";
 
 
 function App() {
@@ -23,7 +25,7 @@ function App() {
   useEffect(() => {
     dispatch(fetchRestaurants())
       .catch(err => console.log("Error:", err.message));
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
@@ -42,8 +44,8 @@ function App() {
             <EditRestaurant />
           </ProtectedRoute>
         } />
-        <Route path="/contact" element={<>Contact us</>} />
-        <Route path="/about" element={<>About us</>} />
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/about" element={<AboutUs />} />
         <Route path="*" element={<>Page not found</>} />
       </Routes>
       <Footer />
