@@ -41,7 +41,9 @@ const restaurantSchema = new Schema({
 restaurantSchema.post("findOneAndDelete", async restaurant => {
     try {
         if (restaurant.image) {
-            fs.unlink(restaurant.image, () => { });
+            fs.unlink(restaurant.image, err => {
+                if (err) throw err;
+            });
         }
 
         if (restaurant.reviews.length) {

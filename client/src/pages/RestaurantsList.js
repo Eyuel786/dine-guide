@@ -12,7 +12,10 @@ const MainContainer = styled(Box)(({ theme }) => ({
     padding: "2rem 6rem",
     backgroundColor: theme.palette.grey[100],
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "center",
+    [theme.breakpoints.down('md')]: {
+        padding: "2rem 1rem"
+    }
 }));
 
 const Title = styled(Typography)(({ theme }) => ({
@@ -28,12 +31,12 @@ const MyLink = styled(Link)(() => ({
 }));
 
 const CardsContainer = styled(Box)(({ theme }) => ({
-    width: "50%",
-    [theme.breakpoints.down("xl")]: {
-        width: "70%"
+    width: 976,
+    [theme.breakpoints.down("md")]: {
+        width: 500
     },
     [theme.breakpoints.down("sm")]: {
-        width: "100%"
+        width: 400
     }
 }));
 

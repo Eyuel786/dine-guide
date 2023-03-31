@@ -7,7 +7,7 @@ import homeBackground from "../resources/images/home-background.jpg";
 import { useEffect, useState } from "react";
 
 const MainContainer = styled(Box)(() => ({
-    minHeight: "91vh",
+    minHeight: "91.5vh",
     padding: "2rem 6rem",
     backgroundImage: `url(${homeBackground})`,
     backgroundSize: "cover",
@@ -27,7 +27,7 @@ const MyOverlay = styled(Box)(() => ({
 }));
 
 const ContentContainer = styled(Box)(() => ({
-    width: "30rem",
+    width: "32rem",
     position: "absolute",
     zIndex: 10,
     top: "50%",

@@ -21,14 +21,18 @@ mongoose.connection.on("error", err => console.log("Error:", err.message));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/api/uploads/images", express.static(path.join(__dirname, "/uploads/images")));
+app.use(
+    "/api/uploads/images/resized",
+    express.static(path.join(__dirname, "/uploads/images/resized")));
 
 app.use("/api", userRouters);
 app.use("/api/restaurants", restaurantsRouters);
 
 app.use((err, req, res, next) => {
     if (req.file) {
-        fs.unlink(req.file.path, () => { })
+        fs.unlink(req.file.path, err => {
+            if (err) next(err);
+        })
     }
     const { message = "Something went wrong!", statusCode = 500 } = err;
 
@@ -38,5 +42,5 @@ app.use((err, req, res, next) => {
 })
 
 app.listen(process.env.PORT, () => {
-    console.log("Server is running");
+    console.log("Server is running on");
 });

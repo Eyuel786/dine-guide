@@ -1,3 +1,6 @@
+const sharp = require('sharp');
+const fs = require('fs');
+
 const Restaurant = require("../models/Restaurant");
 const Review = require("../models/Review");
 
@@ -20,9 +23,19 @@ module.exports.findAllRestaurants = async (req, res) => {
 
 module.exports.createRestaurant = async (req, res) => {
 
+    const path = `uploads/images/resized/${req.file.filename}`;
+
+    await sharp(req.file.path)
+        .resize({ width: 1800 })
+        .toFile(path);
+
+    fs.unlink(req.file.path, err => {
+        if (err) next(err);
+    })
+
     let restaurant = await Restaurant.create({
         ...req.body,
-        image: req.file.path,
+        image: path,
         creator: req.user.userId
     });
 
@@ -60,6 +73,16 @@ module.exports.updateRestaurant = async (req, res) => {
 
     const { name, type, location, website, description } = req.body;
 
+    const path = `uploads/images/resized/${req.file.filename}`;
+
+    await sharp(req.file.path)
+        .resize({ width: 1800 })
+        .toFile(path);
+
+    fs.unlink(req.file.path, err => {
+        if (err) next(err);
+    });
+
     const restaurant = await Restaurant.findByIdAndUpdate(
         req.params.id,
         { name, type, location, website, description },
@@ -75,8 +98,10 @@ module.exports.updateRestaurant = async (req, res) => {
         });
 
     if (req.file) {
-        fs.unlink(restaurant.image, () => { });
-        restaurant.image = req.file.path;
+        fs.unlink(restaurant.image, err => {
+            if (err) next(err);
+        });
+        restaurant.image = path;
         await restaurant.save();
     }
 

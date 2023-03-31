@@ -8,7 +8,7 @@ const MyGridContainer = styled(Grid)(({ theme }) => ({
     backgroundColor: theme.palette.primary.main,
     position: "relative",
     bottom: 0,
-    padding: "1rem 1.5rem"
+    padding: "2rem 7rem"
 }));
 
 const MyGridItem = styled(Grid)(({ theme, color }) => ({

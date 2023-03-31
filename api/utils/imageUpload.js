@@ -9,7 +9,7 @@ const MIMETYPE = {
 }
 
 module.exports = multer({
-    limits: 2000000,
+    limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
         const imgIsValid = !!MIMETYPE[file.mimetype];
         const error = imgIsValid ? null : new Error("Image is invalid");
